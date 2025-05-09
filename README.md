@@ -36,10 +36,10 @@ pip install matplotlib
 
 ## User-manual
 ### Running experiments on Resolution, DP and DPLL slovers
-1. Open folder: MPI/solvers/Tests and place a DIMACS CNF file you wish to test
+1. Open folder: MPI/solvers/Tests and place a folder with DIMACS CNF files you wish to test
 2. Open file: MPI/solvers/benchmark.py
-3. Change the filename string to: filename="Tests/your-filename"
-![image](https://github.com/user-attachments/assets/12c3e59a-3b38-4d52-bc70-b7d4f00d9561)
+3. Change folder path: folder_path="Tests/your-foldername"
+![image](https://github.com/user-attachments/assets/276326c0-4b65-4869-9767-4ba15e8a64d4)
 4. Run the file
 
    
