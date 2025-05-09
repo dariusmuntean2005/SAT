@@ -1,3 +1,12 @@
+c satplan version 1.0
+c created: Thu Jul 24 14:17:32 PDT 1997
+c operators: bw_orig.ops
+c facts: medium.facts
+c goal: 4
+c wff: medium.cnf
+c map: medium.map
+c type: wff
+p cnf 116 953
 -4 -2 6 0
 -4 -3 7 0
 -8 -1 9 0

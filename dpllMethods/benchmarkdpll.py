@@ -19,14 +19,26 @@ def benchmark(method, clauses):
 
 
 # --- FUNCTION TO READ CLAUSES FROM FILE ---
-def read_clauses_from_file(filename):
+def read_clauses_from_dimacs(filename):
     clauses = []
     with open(filename, 'r') as file:
         for line in file:
-            clause = set(map(int, line.split()))
-            if 0 in clause:
-                clause.remove(0)
-            clauses.append(clause)
+            stripped = line.strip()
+            if (
+                stripped.startswith(('c', 'p', '%')) or
+                stripped == '' or
+                stripped == '0'  # skip lone 0 line
+            ):
+                continue
+            try:
+                numbers = list(map(int, stripped.split()))
+                if numbers and numbers[-1] == 0:
+                    numbers.pop()  # remove ending 0
+                clause = set(numbers)
+                if clause:
+                    clauses.append(clause)
+            except ValueError:
+                print(f"Warning: Skipping invalid line in {filename}: {line.strip()}")
     return clauses
 
 
@@ -37,7 +49,7 @@ def average_benchmark(method, files):
     total_results = []
 
     for filename in files:
-        clauses = read_clauses_from_file(filename)
+        clauses = read_clauses_from_dimacs(filename)
         result, t, branches = benchmark(method, clauses)
         total_results.append(result)
         total_time += t
@@ -51,9 +63,9 @@ def average_benchmark(method, files):
 
 # --- LIST OF FILES TO TEST ---
 files = [
-    # 'clause1.txt',
-    # 'clause2.txt',
-    'clause3.txt'
+    'BlocksWorld/anomaly.cnf',
+    'BlocksWorld/medium.cnf',
+    'BlocksWorld/bw_large.a.cnf'
 ]
 
 # --- METHODS TO TEST ---
