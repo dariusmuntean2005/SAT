@@ -30,13 +30,11 @@ def resolution_method(clauses):
                 if res in clauses:
                     already_exists = True
                 if not already_exists:
-                    k+=1
                     clauses.append(res)
                     added_new_clause = True
 
         if not added_new_clause:
             break
-    print(k)
     return "Satisfiable"
 
 

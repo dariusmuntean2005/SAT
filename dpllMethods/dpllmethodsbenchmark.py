@@ -63,7 +63,7 @@ def average_benchmark(method, files):
 
 
 # --- FOLDER CONTAINING DIMACS FILES ---
-folder_path = '3-SAT/tests'  # Change to your folder name
+folder_path = 'BlocksWorld'  # Change to your folder name
 files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.cnf')]
 
 # --- METHODS TO TEST ---

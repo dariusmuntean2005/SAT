@@ -1,6 +1,6 @@
 import time
-import tracemalloc
 import copy
+import os
 import matplotlib.pyplot as plt
 
 # Import your methods
@@ -8,17 +8,8 @@ from resolution import resolution_method
 from dp import dp_method
 from dpll import dpll_method
 
-# --- BENCHMARK FUNCTION ---
-def benchmark(method, clauses):
-    tracemalloc.start()
-    start = time.perf_counter()
-    result = method(copy.deepcopy(clauses))  # Deep copy so original clauses stay untouched
-    end = time.perf_counter()
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    return result, end - start, peak / 1024  # Return result, time (seconds), peak memory (KB)
 
-# --- YOUR CLAUSES TO TEST ---
+# --- Read DIMACS CNF file properly ---
 def read_clauses_from_dimacs(filename):
     clauses = []
     with open(filename, 'r') as file:
@@ -41,54 +32,62 @@ def read_clauses_from_dimacs(filename):
                 print(f"Warning: Skipping invalid line in {filename}: {line.strip()}")
     return clauses
 
-filename = "Tests/uf20-01.cnf"  # Path to the DIMACS file
-clauses = read_clauses_from_dimacs(filename)
 
-# --- METHODS TO TEST ---
+
+# --- Benchmark function ---
+def benchmark(method, clauses):
+    start = time.perf_counter()
+    result = method(copy.deepcopy(clauses))
+    end = time.perf_counter()
+    return result, end - start
+
+
+# --- Average Benchmark for a method over all files ---
+def average_benchmark(method, files):
+    total_time = 0
+    results = []
+
+    for file in files:
+        clauses = read_clauses_from_dimacs(file)
+        result, elapsed = benchmark(method, clauses)
+        results.append(result)
+        total_time += elapsed
+
+    return results, total_time / len(files)
+
+
+# --- Setup ---
+folder_path = 'Tests/40clause'  # Your actual test folder
+files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.cnf')]
+
 methods = [
     ("Resolution", resolution_method),
     ("DP", dp_method),
     ("DPLL", dpll_method)
 ]
 
-# --- RESULTS STORAGE ---
-times = []
-memories = []
-results = []
+# --- Benchmarking ---
+avg_times = []
+all_results = []
 
-# --- RUN THE BENCHMARK ---
 for name, method in methods:
-    # Run the benchmark
-    res, t, mem = benchmark(method, clauses)
+    res, avg_time = average_benchmark(method, files)
+    all_results.append(res)
+    avg_times.append(avg_time)
 
-    results.append(res)
-    times.append(t)
-    memories.append(mem)
-
-# --- PRINT FINAL RESULTS ---
-print("\nBenchmark Results:\n")
+# --- Print Results ---
+print("\nAverage Benchmark Results:\n")
 for i in range(len(methods)):
-    print(f"{methods[i][0]}: {results[i]}, Time: {times[i]:.6f}s, Memory: {memories[i]:.2f} KB")
+    print(f"{methods[i][0]}: {all_results[i]}, Average Time: {avg_times[i]:.6f}s")
 
-# --- PLOT THE RESULTS ---
+# --- Plot Results ---
 x_labels = [name for name, _ in methods]
 x_pos = range(len(methods))
 
-plt.figure(figsize=(12, 8))
-
-# Plot Time
-plt.subplot(2, 1, 1)
-plt.bar(x_pos, times, color='skyblue')
+plt.figure(figsize=(10, 6))
+plt.bar(x_pos, avg_times, color='darkorange', edgecolor='black')
 plt.xticks(x_pos, x_labels)
-plt.ylabel('Time (s)')
-plt.title('Benchmark: Time')
-
-# Plot Memory
-plt.subplot(2, 1, 2)
-plt.bar(x_pos, memories, color='lightgreen')
-plt.xticks(x_pos, x_labels)
-plt.ylabel('Memory (KB)')
-plt.title('Benchmark: Memory Usage')
-
+plt.ylabel('Average Time (seconds)')
+plt.title('SAT Solver Comparison')
 plt.tight_layout()
 plt.show()

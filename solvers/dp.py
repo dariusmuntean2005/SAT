@@ -33,9 +33,19 @@ def resolution(clause1, clause2):
             return new_clause
     return -1
 
+def is_tautology(clause):
+    for literal in clause:
+            if -literal in clause:
+                return True
+    return False
+
 def dp_method(clauses):
+    previous_clauses = set(tuple(sorted(clause)) for clause in clauses)
+
     while True:
-        t = 0
+        t = 0  #
+
+        # Step 1: Apply Rule 1 (unit propagation)
         for i in range(len(clauses)):
             if len(clauses[i]) == 1:
                 literal = next(iter(clauses[i]))
@@ -46,13 +56,15 @@ def dp_method(clauses):
                     return "Unsatisfiable"
                 t = 1
                 break
+
         if t == 1:
             continue
 
-        literals = []
+        # Step 2: Apply Rule 2 (pure literal elimination)
+        literals = set()
         for clause in clauses:
             for elem in clause:
-                literals.append(elem)
+                literals.add(elem)
 
         for i in literals:
             if -i not in literals:
@@ -60,20 +72,32 @@ def dp_method(clauses):
                     return "Satisfiable"
                 t = 1
                 break
+
         if t == 1:
             continue
 
+        # Step 3: Apply Resolution
+        added_new_clause = False
+        new_clauses = []
         for i in range(len(clauses) - 1):
             for j in range(i + 1, len(clauses)):
-                rez = resolution(clauses[i], clauses[j])
-                if rez != -1:
-                    if rez == set():
-                        return "Unsatisfiable"
-                    if rez not in clauses:
-                        clauses.append(rez)
-                        t = 1
-                        break
-            if t == 1:
-                break
-        if t == 0:
-            return "Satisfiable"
+                res = resolution(clauses[i], clauses[j])
+                if res == -1:
+                    continue
+                if is_tautology(res):
+                    continue
+                if res == []:
+                    return "Unsatisfiable"
+                if res not in clauses and res not in new_clauses:
+                    new_clauses.append(res)
+                    added_new_clause = True
+
+        if not added_new_clause:
+            current_clauses = set(tuple(sorted(clause)) for clause in clauses)
+            if current_clauses == previous_clauses:
+                return "Satisfiable"
+            previous_clauses = current_clauses
+
+        clauses.extend(new_clauses)
+
+
