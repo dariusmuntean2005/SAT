@@ -1,0 +1,30 @@
+Test 1
+Average Benchmark Results:
+
+DPLL: ['Satisfiable'], Average Time: 0.005311s, Average Branches: 7.00
+MFO: ['Satisfiable'], Average Time: 0.002922s, Average Branches: 2.00
+JW: ['Satisfiable'], Average Time: 0.002954s, Average Branches: 2.00
+DLIS: ['Satisfiable'], Average Time: 0.002888s, Average Branches: 2.00
+MOMS: ['Satisfiable'], Average Time: 0.006562s, Average Branches: 3.00
+
+
+
+Test 2
+Average Benchmark Results:
+
+DPLL: ['Satisfiable'], Average Time: 0.050526s, Average Branches: 6.00
+MFO: ['Satisfiable'], Average Time: 0.053585s, Average Branches: 12.00
+JW: ['Satisfiable'], Average Time: 0.042450s, Average Branches: 9.00
+DLIS: ['Satisfiable'], Average Time: 0.061937s, Average Branches: 12.00
+MOMS: ['Satisfiable'], Average Time: 0.091330s, Average Branches: 16.00
+
+
+
+Test 3
+Average Benchmark Results:
+
+DPLL: ['Satisfiable'], Average Time: 17.701036s, Average Branches: 15.00
+MFO: ['Satisfiable'], Average Time: 11.711490s, Average Branches: 7.00
+JW: ['Satisfiable'], Average Time: 21.416717s, Average Branches: 15.00
+DLIS: ['Satisfiable'], Average Time: 11.710638s, Average Branches: 7.00
+MOMS: ['Satisfiable'], Average Time: 2.921331s, Average Branches: 25.00
