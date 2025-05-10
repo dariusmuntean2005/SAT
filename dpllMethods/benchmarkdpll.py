@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 
 # Import your methods
 from dpll import dpll_method
-from MFO import mfo_method
+from MAXO import maxo_method
 from JW import jw_method
-from DLIS import dlis_method
 from MOMS import moms_method
 
 
@@ -71,9 +70,8 @@ files = [
 # --- METHODS TO TEST ---
 methods = [
     ("DPLL", dpll_method),
-    ("MFO", mfo_method),
+    ("MAXO", mfo_method),
     ("JW", jw_method),
-    ("DLIS", dlis_method),
     ("MOMS", moms_method)
 ]
 

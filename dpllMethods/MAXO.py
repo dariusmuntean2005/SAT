@@ -58,45 +58,39 @@ def apply_rule2(clauses):
             return "continue"
     return None
 
-def dlis_choose_literal(clauses):
-    counts = {}
-
-    for clause in clauses:
-        for literal in clause:
-            if literal not in counts:
-                counts[literal] = 0
-            counts[literal] += 1
-
-    if not counts:
-        return None
-
-    return max(counts, key=lambda lit: counts[lit])
-
-def dlis_method(clauses,branches):
+def maxo_method(clauses,branches):
     while True:
         res1 = apply_rule1(clauses)
         if res1 == "SAT":
-            return "Satisfiable", branches
+            return "Satisfiable",branches
         if res1 == "UNSAT":
-            return "Unsatisfiable", branches
+            return "Unsatisfiable",branches
         if res1 == "continue":
             continue
 
         res2 = apply_rule2(clauses)
         if res2 == "SAT":
-            return "Satisfiable", branches
+            return "Satisfiable",branches
         if res2 == "continue":
             continue
 
         break
 
     if clauses == []:
-        return "Satisfiable", branches
+        return "Satisfiable",branches
     for clause in clauses:
         if clause == set():
-            return "Unsatisfiable", branches
+            return "Unsatisfiable",branches
 
-    chosen_literal = dlis_choose_literal(clauses)
+    d={}
+    for clause in clauses:
+        for literal in clause:
+            if literal in d:
+                d[literal] += 1
+            else:
+                d[literal] = 1
+
+    chosen_literal=max(d, key=lambda lit: d[lit])
 
     clauses_copy1 = [set(c) for c in clauses]
     clauses_copy2 = [set(c) for c in clauses]
@@ -104,12 +98,12 @@ def dlis_method(clauses,branches):
     branches += 1
 
     rule1(clauses_copy1, chosen_literal)
-    result1, branches1 = dlis_method(clauses_copy1, branches)
+    result1, branches1 = maxo_method(clauses_copy1, branches)
     if result1 == "Satisfiable":
         return result1, branches1
 
     rule1(clauses_copy2, compliment(chosen_literal))
-    result2, branches2 = dlis_method(clauses_copy2, branches)
+    result2, branches2 = maxo_method(clauses_copy2, branches)
     if result2 == "Satisfiable":
         return result2, branches2
 
